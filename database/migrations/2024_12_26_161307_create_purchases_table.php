@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('supplier_id')->constrained()->onDelete('cascade'); // ID del proveedor
             $table->decimal('total_amount', 10, 2); // Monto total de la compra
+           $table->unsignedBigInteger('created_by_user')->nullable();
+            $table->unsignedBigInteger('updated_by_user')->nullable();
             $table->timestamps();
+            $table->foreign('created_by_user')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('updated_by_user')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

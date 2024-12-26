@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('key'); // Clave de configuración
             $table->string('value'); // Valor de configuración
+           $table->unsignedBigInteger('created_by_user')->nullable();
+            $table->unsignedBigInteger('updated_by_user')->nullable();
             $table->timestamps();
+            $table->foreign('created_by_user')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('updated_by_user')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

@@ -16,7 +16,11 @@ return new class extends Migration
             $table->decimal('total_income', 10, 2); // Ingreso total
             $table->decimal('total_expense', 10, 2); // Gasto total
             $table->decimal('net_income', 10, 2); // Ingreso neto
+           $table->unsignedBigInteger('created_by_user')->nullable();
+            $table->unsignedBigInteger('updated_by_user')->nullable();
             $table->timestamps();
+            $table->foreign('created_by_user')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('updated_by_user')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

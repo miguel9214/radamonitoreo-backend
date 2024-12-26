@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade'); // ID del producto
             $table->integer('quantity'); // Cantidad en inventario
+           $table->unsignedBigInteger('created_by_user')->nullable();
+            $table->unsignedBigInteger('updated_by_user')->nullable();
             $table->timestamps();
+            $table->foreign('created_by_user')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('updated_by_user')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

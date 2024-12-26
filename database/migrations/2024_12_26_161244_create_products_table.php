@@ -18,7 +18,11 @@ return new class extends Migration
             $table->decimal('price', 10, 2); // Precio del producto
             $table->string('image')->nullable(); // Imagen del producto
             $table->integer('stock'); // Cantidad en stock
+            $table->unsignedBigInteger('created_by_user')->nullable();
+            $table->unsignedBigInteger('updated_by_user')->nullable();
             $table->timestamps();
+            $table->foreign('created_by_user')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('updated_by_user')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
         });
     }
 

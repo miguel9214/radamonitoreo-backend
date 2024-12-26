@@ -17,8 +17,11 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->date('due_date');
             $table->string('status');
+           $table->unsignedBigInteger('created_by_user')->nullable();
+            $table->unsignedBigInteger('updated_by_user')->nullable();
             $table->timestamps();
-
+            $table->foreign('created_by_user')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('updated_by_user')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('customer_id')->references('id')->on('customers');
         });
     }
