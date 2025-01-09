@@ -34,16 +34,25 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string',
             'description' => 'required|string',
-            'price' => 'required|numeric',
+            'purchase_price' => 'required|numeric',
+            'profit_margin' => 'required|numeric',
+            'sale_price' => 'required|numeric',
+            'vat' => 'required|numeric',
+            'total_sale_price' => 'required|numeric',
             'image' => 'required|string',
-            'stock' => 'required'
+            'stock' => 'required|numeric',
+
         ]);
 
         try {
             $product = new Product();
             $product->name = $request->name;
             $product->description = $request->description;
-            $product->price = $request->price;
+            $product->purchase_price = $request->purchase_price;
+            $product->profit_margin = $request->profit_margin;
+            $product->sale_price = $request->sale_price;
+            $product->vat = $request->vat;  
+            $product->total_sale_price = $request->total_sale_price;
             $product->image = $request->image;
             $product->stock = $request->stock;
             $product->created_by_user = auth()->user()->id;
@@ -60,9 +69,13 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string',
             'description' => 'required|string',
-            'price' => 'required|numeric',
+            'purchase_price' => 'required|numeric',
+            'profit_margin' => 'required|numeric',
+            'sale_price' => 'required|numeric',
+            'vat' => 'required|numeric',
+            'total_sale_price' => 'required|numeric',
             'image' => 'required|string',
-            'stock' => 'required'
+            'stock' => 'required|numeric',
         ]);
 
         try {
@@ -73,7 +86,11 @@ class ProductController extends Controller
 
             $product->name = $request->name;
             $product->description = $request->description;
-            $product->price = $request->price;
+            $product->purchase_price = $request->purchase_price;
+            $product->profit_margin = $request->profit_margin;
+            $product->sale_price = $request->sale_price;
+            $product->vat = $request->vat;  
+            $product->total_sale_price = $request->total_sale_price;
             $product->image = $request->image;
             $product->stock = $request->stock;
             $product->updated_by_user = auth()->user()->id;
