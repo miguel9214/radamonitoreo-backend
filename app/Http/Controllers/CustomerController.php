@@ -20,12 +20,9 @@ class CustomerController extends Controller
             "c.address"
         )->get();
 
-        $customerList::paginate(6);
+        $customerList::paginate(5);
 
         return response()->json(['message' => 'Customer list', 'customers' => $customerList], 200);
-
-        $customers = Customer::all();
-        return response()->json(['message'=>'Lista de clientes', 'customers'=>$customers, 200]);
     }
 
     public function store(Request $request)
