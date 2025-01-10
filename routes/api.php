@@ -51,12 +51,3 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('customer/{id}', [CustomerController::class, 'update']);
     Route::delete('customer/{id}', [CustomerController::class, 'destroy']);
 });
-
-Route::group([ 'middleware' =>'auth:api'],function(){
-    Route::get('index',[CustomerController::class,'index']);
-    Route::post('store',[CustomerController::class,'store']);
-    Route::get('show/{id}',[CustomerController::class,'show']);
-    Route::put('update/{id}',[CustomerController::class,'update']);
-    Route::delete('destroy/{id}',[CustomerController::class,'destroy']);
-});
-
