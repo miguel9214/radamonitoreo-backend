@@ -5,30 +5,46 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Database\QueryException;
-
+use Illuminate\Support\Facades\DB;
 class ProductController extends Controller
 {
     public function index()
     {
-        try {
-            $products = Product::all();
+        $productList = DB::table("products as p")
+        ->select(
+            "p.id",
+            "p.image",
+            "p.name",
+            "p.purchase_price",
+            "p.profit_margin",
+            "p.sale_price",
+            "p.total_sale_price"
+        )->get();
 
-            return response()->json(['message' => 'Products retrieved successfully', 'data' => $products], 200);
-        } catch (QueryException) {
-            return response()->json(['message' => 'Error retrieving products'], 500);
-        }
+        return response()->json($productList);
     }
     
     public function show(string $id){
-        $product = Product::find($id);
-
+        $product = DB::table("products as p")
+            ->select(
+                "p.id",
+                "p.image",
+                "p.name",
+                "p.purchase_price",
+                "p.profit_margin",
+                "p.sale_price",
+                "p.total_sale_price"
+            )
+            ->where('p.id', $id)  
+            ->first(); 
+    
         if($product) {
             return response()->json(['message' => 'Product found', 'data' => $product]);
         } else {
             return response()->json(['message' => 'Product not found'], 404);
         }
     }
-
+    
     public function store(Request $request)
     {
         $request->validate([
