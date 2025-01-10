@@ -23,7 +23,7 @@ class ProductController extends Controller
 
         return response()->json($productList);
     }
-    
+
     public function show(string $id){
         $product = DB::table("products as p")
             ->select(
@@ -35,16 +35,16 @@ class ProductController extends Controller
                 "p.sale_price",
                 "p.total_sale_price"
             )
-            ->where('p.id', $id)  
-            ->first(); 
-    
+            ->where('p.id', $id)
+            ->first();
+
         if($product) {
             return response()->json(['message' => 'Product found', 'data' => $product]);
         } else {
             return response()->json(['message' => 'Product not found'], 404);
         }
     }
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -67,16 +67,16 @@ class ProductController extends Controller
             $product->purchase_price = $request->purchase_price;
             $product->profit_margin = $request->profit_margin;
             $product->sale_price = $request->sale_price;
-            $product->vat = $request->vat;  
+            $product->vat = $request->vat;
             $product->total_sale_price = $request->total_sale_price;
             $product->image = $request->image;
             $product->stock = $request->stock;
             $product->created_by_user = auth()->user()->id;
             $product->save();
 
-            return response()->json(['message' => 'Product created successfully']);
-        } catch (QueryException) {
-            return response()->json(['message' => 'Error creating product'], 500);
+            return response()->json(['message' => 'Producto creado exitosamente', 'product' => $product], 201);
+        } catch (QueryException $e) {
+            return response()->json(['message' => 'Error al crear el cliente', 'error' => $e->errorInfo], 400);
         }
     }
 
@@ -105,7 +105,7 @@ class ProductController extends Controller
             $product->purchase_price = $request->purchase_price;
             $product->profit_margin = $request->profit_margin;
             $product->sale_price = $request->sale_price;
-            $product->vat = $request->vat;  
+            $product->vat = $request->vat;
             $product->total_sale_price = $request->total_sale_price;
             $product->image = $request->image;
             $product->stock = $request->stock;
