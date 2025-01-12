@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             IncomeQuerySeeder::class,
             IncomeStatementSeeder::class,
             ConfigurationSeeder::class,
+            UpdateCustomersWithDniSeeder::class,
         ]);
     }
 }

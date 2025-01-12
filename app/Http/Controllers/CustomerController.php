@@ -10,17 +10,24 @@ use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $customerList = DB::table("customers as c")->select(
+        $search = $request->input('search');
+
+        $query = DB::table("customers as c")->select(
             "c.id",
+            "c.dni",
             "c.name",
             "c.email",
             "c.phone",
             "c.address"
-        )->get();
+        );
 
-        $customerList::paginate(5);
+        if ($search) {
+            $query->where('c.name', 'like', '%' . $search . '%');
+        }
+
+        $customerList = $query->paginate(5);
 
         return response()->json(['message' => 'Customer list', 'customers' => $customerList], 200);
     }
@@ -28,6 +35,7 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'dni'=>'required|numeric|unique:customers',
             'name' => 'required|string',
             'email' => 'required|string|email|unique:customers',
             'phone' => 'required|string',
@@ -35,6 +43,7 @@ class CustomerController extends Controller
         ]);
         try {
             $customer = new Customer();
+            $customer->dni = $request->dni;
             $customer->name = $request->name;
             $customer->email = $request->email;
             $customer->phone = $request->phone;
@@ -51,6 +60,7 @@ class CustomerController extends Controller
     {
         $customer = DB::table("customers as c")->select(
             "c.id",
+            "c.dni",
             "c.name",
             "c.email",
             "c.phone",
@@ -63,24 +73,13 @@ class CustomerController extends Controller
             return response()->json(['message' => 'Customer not found'], 404);
         }
 
-        $customer = new Customer([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'address' => $request->address
-        ]);
-
-        $customer->save();
-
-        return response()->json([
-            'message' => 'Cliente creado exitosamente'
-        ], 201);
     }
 
 
     public function update(Request $request, $id)
     {
         $request->validate([
+            'dni'=>'required|numeric|unique:customers,dni,'.$id,
             'name' => 'required|string',
             'email' => 'required|string|email',
             'phone' => 'required|string',
@@ -88,25 +87,30 @@ class CustomerController extends Controller
         ]);
 
         try {
-
-            if ($customer = Customer::where('email', $request->email)->where('id', '!=', $id)->first()) {
-                return response()->json(['message' => 'The email is already in use'], 400);
+            // Verificar si el cliente existe
+            $customer = Customer::find($id);
+            if (!$customer) {
+                return response()->json(['message' => 'Cliente no encontrado'], 404);
             }
+
+            // Verificar si el email ya está en uso por otro cliente
+            if (Customer::where('email', $request->email)->where('id', '!=', $id)->exists()) {
+                return response()->json(['message' => 'El correo electrónico ya está en uso'], 400);
+            }
+
+            // Actualizar los datos del cliente
+            $customer->dni = $request->dni;
             $customer->name = $request->name;
             $customer->email = $request->email;
             $customer->phone = $request->phone;
             $customer->address = $request->address;
             $customer->updated_by_user = auth()->user()->id;
             $customer->save();
+
             return response()->json(['message' => 'Cliente actualizado exitosamente', 'customer' => $customer], 200);
         } catch (QueryException $e) {
             return response()->json(['message' => 'Error al actualizar el cliente', 'error' => $e->errorInfo], 400);
         }
-        $customer = Customer::find($id);
-        $customer->update($request->all());
-        return response()->json([
-            'message' => 'Cliente actualizado exitosamente'
-        ], 200);
     }
 
 

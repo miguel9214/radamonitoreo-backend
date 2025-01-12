@@ -20,7 +20,6 @@ class ProductController extends Controller
             "p.sale_price",
             "p.total_sale_price"
         )->get();
-
         return response()->json($productList);
     }
 
