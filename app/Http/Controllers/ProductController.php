@@ -11,17 +11,19 @@ class ProductController extends Controller
     public function index()
     {
         $productList = DB::table("products as p")
-        ->select(
-            "p.id",
-            "p.image",
-            "p.name",
-            "p.purchase_price",
-            "p.profit_margin",
-            "p.sale_price",
-            "p.total_sale_price"
-        )->get();
+            ->select(
+                "p.id",
+                "p.image",
+                "p.name",
+                "p.purchase_price",
+                "p.profit_margin",
+                "p.sale_price",
+                "p.total_sale_price"
+            )->paginate(5); 
+    
         return response()->json($productList);
     }
+    
 
     public function show(string $id){
         $product = DB::table("products as p")
