@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->input('per_page', 10); 
+    
         $productList = DB::table("products as p")
             ->select(
                 "p.id",
@@ -19,13 +22,14 @@ class ProductController extends Controller
                 "p.profit_margin",
                 "p.sale_price",
                 "p.total_sale_price"
-            )->paginate(5); 
+            )
+            ->paginate($perPage); 
     
         return response()->json($productList);
     }
-    
 
-    public function show(string $id){
+    public function show(string $id)
+    {
         $product = DB::table("products as p")
             ->select(
                 "p.id",
@@ -39,7 +43,7 @@ class ProductController extends Controller
             ->where('p.id', $id)
             ->first();
 
-        if($product) {
+        if ($product) {
             return response()->json(['message' => 'Product found', 'data' => $product]);
         } else {
             return response()->json(['message' => 'Product not found'], 404);
@@ -119,10 +123,11 @@ class ProductController extends Controller
         }
     }
 
-    public function delete(string $id){
+    public function delete(string $id)
+    {
         $product = Product::find($id);
 
-        if(!$product){
+        if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
 
@@ -130,6 +135,4 @@ class ProductController extends Controller
 
         return response()->json(['message' => 'Product deleted successfully']);
     }
-
-
 }
