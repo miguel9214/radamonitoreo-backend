@@ -33,12 +33,15 @@ class ProductController extends Controller
         $product = DB::table("products as p")
             ->select(
                 "p.id",
-                "p.image",
                 "p.name",
+                "p.description",
                 "p.purchase_price",
                 "p.profit_margin",
                 "p.sale_price",
-                "p.total_sale_price"
+                "p.vat",
+                "p.total_sale_price",
+                "p.image",
+                "p.stock",
             )
             ->where('p.id', $id)
             ->first();
