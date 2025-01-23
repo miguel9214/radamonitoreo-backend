@@ -103,7 +103,7 @@ class ProductController extends Controller
         ]);
 
         try {
-            $product = Product::find($id);
+            $product = Product::findOrFail($id);
             if (!$product) {
                 return response()->json(['message' => 'Product not found'], 404);
             }
@@ -112,9 +112,9 @@ class ProductController extends Controller
             $product->description = $request->description;
             $product->purchase_price = $request->purchase_price;
             $product->profit_margin = $request->profit_margin;
-            $product->sale_price = $request->sale_price;
+            $product->sale_price =  $request->input('sale_price');
             $product->vat = $request->vat;
-            $product->total_sale_price = $request->total_sale_price;
+            $product->total_sale_price = $request->input('total_sale_price');
             $product->image = $request->image;
             $product->stock = $request->stock;
             $product->updated_by_user = auth()->user()->id;
@@ -126,16 +126,17 @@ class ProductController extends Controller
         }
     }
 
-    public function delete(string $id)
+    public function destroy($id)
     {
         $product = Product::find($id);
-
         if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
+            return response()->json(['message' => 'Producto no encontrado'], 404);
         }
-
+    
         $product->delete();
-
-        return response()->json(['message' => 'Product deleted successfully']);
+    
+        return response()->json(['message' => 'Producto eliminado con éxito'], 200);
     }
+    
+    
 }
