@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,4 +51,15 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('customer/{id}', [CustomerController::class, 'show']);
     Route::put('customer/{id}', [CustomerController::class, 'update']);
     Route::delete('customer/{id}', [CustomerController::class, 'destroy']);
+});
+
+
+Route::group(['middleware' => 'auth:api'], function () {
+
+    //SUPPLIER
+    Route::get('supplier', [SupplierController::class, 'index']);
+    Route::post('supplier', [SupplierController::class, 'store']);
+    Route::get('supplier/{id}', [SupplierController::class, 'show']);
+    Route::put('supplier/{id}', [SupplierController::class, 'update']);
+    Route::delete('supplier/{id}', [SupplierController::class, 'destroy']);
 });
