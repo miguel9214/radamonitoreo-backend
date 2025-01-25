@@ -12,24 +12,29 @@ class CustomerController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search');
+        try{
+            $search = $request->input('search');
 
-        $query = DB::table("customers as c")->select(
-            "c.id",
-            "c.dni",
-            "c.name",
-            "c.email",
-            "c.phone",
-            "c.address"
-        );
+            $query = DB::table("customers as c")->select(
+                "c.id",
+                "c.dni",
+                "c.name",
+                "c.email",
+                "c.phone",
+                "c.address"
+            );
 
-        if ($search) {
-            $query->where('c.name', 'like', '%' . $search . '%');
+            if ($search) {
+                $query->where('c.name', 'like', '%' . $search . '%');
+            }
+
+            $customerList = $query->paginate(5);
+
+            return response()->json(['message' => 'Customer list', 'customers' => $customerList], 200);
+        } catch (QueryException $e) {
+            return response()->json(['message' => 'Error getting customer list', 'error' => $e->errorInfo], 400);
         }
 
-        $customerList = $query->paginate(5);
-
-        return response()->json(['message' => 'Customer list', 'customers' => $customerList], 200);
     }
 
     public function store(Request $request)
@@ -58,19 +63,23 @@ class CustomerController extends Controller
 
     public function show($id)
     {
-        $customer = DB::table("customers as c")->select(
-            "c.id",
-            "c.dni",
-            "c.name",
-            "c.email",
-            "c.phone",
-            "c.address"
-        )->where('c.id', $id)->first();
-
-        if ($customer) {
-            return response()->json(['message' => 'Customer found', 'customer' => $customer]);
-        } else {
-            return response()->json(['message' => 'Customer not found'], 404);
+        try{
+            $customer = DB::table("customers as c")->select(
+                "c.id",
+                "c.dni",
+                "c.name",
+                "c.email",
+                "c.phone",
+                "c.address"
+            )->where('c.id', $id)->first();
+            if($customer){
+                return response()->json(['message' => 'Customer found', 'customer' => $customer]);
+            }else{
+                return response()->json(['message' => 'Customer not found'], 404);
+            }
+        }
+        catch(QueryException $e){
+            return response()->json(['message' => 'Error getting customer details', 'error' => $e->errorInfo], 400);
         }
 
     }
@@ -116,16 +125,17 @@ class CustomerController extends Controller
 
     public function destroy($id)
     {
-        if (!$customer = Customer::find($id)) {
-            return response()->json(['message' => 'Customer not found'], 404);
-        } else {
-            $customer->delete();
-            return response()->json(['message' => 'Customer deleted successfully'], 200);
+        try {
+            $customer = Customer::find($id);
+            if (!$customer) {
+                return response()->json(['message' => 'Customer not found'], 404);
+            } else {
+                $customer->delete();
+                return response()->json(['message' => 'Customer deleted successfully'], 200);
+            }
+        } catch (QueryException $e) {
+            return response()->json(['message' => 'Error deleting customer', 'error' => $e->errorInfo], 400);
         }
-        $customer = Customer::find($id);
-        $customer->delete();
-        return response()->json([
-            'message' => 'Cliente eliminado exitosamente'
-        ], 200);
+
     }
 }
